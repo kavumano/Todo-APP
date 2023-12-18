@@ -1,14 +1,4 @@
 <!DOCTYPE html>
-<html lang="en" >
-<head>
-  <meta charset="UTF-8">
-  <title>CodePen - A Pen by rasta pasta</title>
-  
-
-</head>
-<body>
-<!-- partial:index.partial.html -->
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -18,6 +8,12 @@
         body {
             font-family: Arial, sans-serif;
             transition: background-color 0.5s, color 0.5s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
         }
         #todoList {
             list-style-type: none;
@@ -31,7 +27,8 @@
             color: #888;
         }
         #task {
-            width: 300px; /* Adjust the width as needed */
+            width: 500px; /* Adjust the width as needed */
+            height: 40px; /* Adjust the height as needed */
         }
         .dark-theme {
             background-color: #333;
@@ -74,16 +71,29 @@
                 if (taskText !== '') {
                     addTask(taskText);
                     taskInput.value = '';
+
+                    // Save tasks to local storage
+                    saveTasks();
                 }
             });
 
             clearTasksButton.addEventListener('click', function () {
                 todoList.innerHTML = '';
+
+                // Save tasks to local storage
+                saveTasks();
             });
 
             toggleThemeButton.addEventListener('click', function () {
                 body.classList.toggle('dark-theme');
+
+                // Save theme preference to local storage
+                saveThemePreference();
             });
+
+            // Load tasks and theme preference when the page loads
+            loadTasks();
+            loadThemePreference();
 
             function addTask(taskText) {
                 const taskItem = document.createElement('li');
@@ -93,11 +103,17 @@
                 taskCheckbox.type = 'checkbox';
                 taskCheckbox.addEventListener('change', function () {
                     taskItem.classList.toggle('complete', taskCheckbox.checked);
+
+                    // Save tasks to local storage
+                    saveTasks();
                 });
 
                 deleteButton.innerText = 'Delete';
                 deleteButton.addEventListener('click', function () {
                     todoList.removeChild(taskItem);
+
+                    // Save tasks to local storage
+                    saveTasks();
                 });
 
                 taskItem.classList.add('task');
@@ -107,11 +123,46 @@
 
                 todoList.appendChild(taskItem);
             }
+
+            function saveTasks() {
+                const tasks = Array.from(todoList.children).map(task => ({
+                    text: task.textContent,
+                    completed: task.classList.contains('complete')
+                }));
+
+                localStorage.setItem('tasks', JSON.stringify(tasks));
+            }
+
+            function loadTasks() {
+                const savedTasks = localStorage.getItem('tasks');
+                if (savedTasks) {
+                    const tasks = JSON.parse(savedTasks);
+                    tasks.forEach(task => {
+                        addTask(task.text);
+                        const lastTask = todoList.lastChild;
+                        if (task.completed) {
+                            lastTask.classList.add('complete');
+                            lastTask.firstChild.checked = true;
+                        }
+                    });
+                }
+            }
+
+            function saveThemePreference() {
+                const themePreference = body.classList.contains('dark-theme');
+                localStorage.setItem('darkTheme', JSON.stringify(themePreference));
+            }
+
+            function loadThemePreference() {
+                const savedThemePreference = localStorage.getItem('darkTheme');
+                if (savedThemePreference) {
+                    const themePreference = JSON.parse(savedThemePreference);
+                    if (themePreference) {
+                        body.classList.add('dark-theme');
+                    }
+                }
+            }
         });
     </script>
-</body>
-</html>
-<!-- partial -->
-  
 </body>
 </html>
