@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>CodePen - A Pen by rasta pasta</title>
+  
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            transition: background-color 0.5s, color 0.5s;
+        }
+        #todoList {
+            list-style-type: none;
+            padding: 0;
+        }
+        .task {
+            margin-bottom: 8px;
+        }
+        .complete {
+            text-decoration: line-through;
+            color: #888;
+        }
+        #task {
+            width: 300px; /* Adjust the width as needed */
+        }
+        .dark-theme {
+            background-color: #333;
+            color: #fff;
+        }
+        #clearTasks,
+        #toggleTheme {
+            margin-top: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Todo App</h1>
+    
+    <form id="todoForm">
+        <label for="task">New Task:</label>
+        <input type="text" id="task" required>
+        <button type="submit">Add Task</button>
+    </form>
+
+    <ul id="todoList"></ul>
+
+    <button id="clearTasks">Clear All Tasks</button>
+    <button id="toggleTheme">Toggle Theme</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const todoForm = document.getElementById('todoForm');
+            const todoList = document.getElementById('todoList');
+            const clearTasksButton = document.getElementById('clearTasks');
+            const toggleThemeButton = document.getElementById('toggleTheme');
+            const body = document.body;
+
+            todoForm.addEventListener('submit', function (event) {
+                event.preventDefault();
+
+                const taskInput = document.getElementById('task');
+                const taskText = taskInput.value.trim();
+
+                if (taskText !== '') {
+                    addTask(taskText);
+                    taskInput.value = '';
+                }
+            });
+
+            clearTasksButton.addEventListener('click', function () {
+                todoList.innerHTML = '';
+            });
+
+            toggleThemeButton.addEventListener('click', function () {
+                body.classList.toggle('dark-theme');
+            });
+
+            function addTask(taskText) {
+                const taskItem = document.createElement('li');
+                const taskCheckbox = document.createElement('input');
+                const deleteButton = document.createElement('button');
+
+                taskCheckbox.type = 'checkbox';
+                taskCheckbox.addEventListener('change', function () {
+                    taskItem.classList.toggle('complete', taskCheckbox.checked);
+                });
+
+                deleteButton.innerText = 'Delete';
+                deleteButton.addEventListener('click', function () {
+                    todoList.removeChild(taskItem);
+                });
+
+                taskItem.classList.add('task');
+                taskItem.textContent = taskText;
+                taskItem.appendChild(taskCheckbox);
+                taskItem.appendChild(deleteButton);
+
+                todoList.appendChild(taskItem);
+            }
+        });
+    </script>
+</body>
+</html>
+<!-- partial -->
+  
+</body>
+</html>
